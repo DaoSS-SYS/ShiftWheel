@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ShiftWheel;
 
-internal enum FileKind { Unknown, Image, Video, Audio, Pdf }
+internal enum FileKind { Unknown, Image, Video, Audio, Pdf, Word, Slides, Sheet }
 
 internal static class Formats
 {
@@ -15,6 +15,13 @@ internal static class Formats
         { "mp4", "mkv", "mov", "avi", "webm", "wmv", "flv", "m4v", "mpg", "mpeg", "3gp", "ts" };
     static readonly HashSet<string> Aud = new(StringComparer.OrdinalIgnoreCase)
         { "mp3", "wav", "flac", "ogg", "m4a", "aac", "opus", "wma", "aiff" };
+
+    static readonly HashSet<string> Doc = new(StringComparer.OrdinalIgnoreCase)
+        { "doc", "docx", "docm", "rtf", "odt" };
+    static readonly HashSet<string> Sld = new(StringComparer.OrdinalIgnoreCase)
+        { "ppt", "pptx", "pptm", "pps", "ppsx", "odp" };
+    static readonly HashSet<string> Sht = new(StringComparer.OrdinalIgnoreCase)
+        { "xls", "xlsx", "xlsm", "ods" };
 
     public static string Ext(string path) => Normalize(Path.GetExtension(path).TrimStart('.'));
 
@@ -31,6 +38,9 @@ internal static class Formats
         if (Img.Contains(ext)) return FileKind.Image;
         if (Vid.Contains(ext)) return FileKind.Video;
         if (Aud.Contains(ext)) return FileKind.Audio;
+        if (Doc.Contains(ext)) return FileKind.Word;
+        if (Sld.Contains(ext)) return FileKind.Slides;
+        if (Sht.Contains(ext)) return FileKind.Sheet;
         return FileKind.Unknown;
     }
 
@@ -46,6 +56,9 @@ internal static class Formats
             FileKind.Video => new[] { "MP4", "MKV", "WEBM", "MOV", "AVI", "GIF", "MP3", "WAV", "M4A" },
             FileKind.Audio => new[] { "MP3", "WAV", "FLAC", "OGG", "M4A", "AAC", "OPUS" },
             FileKind.Pdf => new[] { "PNG", "JPG", "WEBP", "BMP", "TXT", "DOCX" },
+            FileKind.Word => new[] { "PDF", "DOCX", "TXT" },
+            FileKind.Slides => new[] { "PDF", "PNG", "JPG" },
+            FileKind.Sheet => new[] { "PDF", "XLSX", "CSV" },
             _ => Array.Empty<string>(),
         };
         return all.Where(t => !t.Equals(ext, StringComparison.OrdinalIgnoreCase)).ToList();

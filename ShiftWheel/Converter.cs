@@ -54,6 +54,11 @@ internal static class Converter
 
             case FileKind.Audio:
                 return new[] { await Ffmpeg(input, target, AudioArgs(target), p) };
+
+            case FileKind.Word:
+            case FileKind.Slides:
+            case FileKind.Sheet:
+                return await OfficeTools.ConvertAsync(input, kind, target, p);
         }
         throw new ConvertException("Неподдерживаемая операция");
     }
@@ -147,7 +152,8 @@ internal static class Converter
     static async Task<string> Tool(string input, FileKind kind, string tool, IProgress<double>? p)
     {
         string ext = Formats.Ext(input);
-        if (kind == FileKind.Pdf) throw new ConvertException("Для PDF инструменты недоступны");
+        if (kind is not (FileKind.Image or FileKind.Video or FileKind.Audio))
+            throw new ConvertException("Для этого типа файлов инструменты недоступны");
 
         switch (tool)
         {
