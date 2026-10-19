@@ -13,6 +13,7 @@ namespace ShiftWheel;
 internal sealed class TrayHost : IDisposable
 {
     const string RunKey = @"Software\Microsoft\Windows\CurrentVersion\Run";
+    const string StartupApprovedKey = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
     const string AppName = "ShiftWheel";
 
     readonly NotifyIcon _tray;
@@ -94,7 +95,11 @@ internal sealed class TrayHost : IDisposable
     static bool IsAutostart()
     {
         using var key = Registry.CurrentUser.OpenSubKey(RunKey);
-        return key?.GetValue(AppName) != null;
+        if (key?.GetValue(AppName) == null) return false;
+
+        // Honour the "disabled" switch a user can flip in Task Manager → Startup apps.
+        using var approved = Registry.CurrentUser.OpenSubKey(StartupApprovedKey);
+        return approved?.GetValue(AppName) is not byte[] { Length: > 0 } flag || (flag[0] & 1) == 0;
     }
 
     static void SetAutostart(bool on)
@@ -103,6 +108,12 @@ internal sealed class TrayHost : IDisposable
         if (key == null) return;
         if (on) key.SetValue(AppName, $"\"{Environment.ProcessPath}\"");
         else key.DeleteValue(AppName, throwOnMissingValue: false);
+
+        // Windows 11 only starts Run entries that Task Manager's "Startup apps" list marks as enabled
+        // (02 = enabled, 03 = disabled by the user), so write that flag too.
+        using var approved = Registry.CurrentUser.CreateSubKey(StartupApprovedKey, writable: true);
+        if (on) approved.SetValue(AppName, new byte[] { 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, RegistryValueKind.Binary);
+        else approved.DeleteValue(AppName, throwOnMissingValue: false);
     }
 
     // ───────────── tray icon: an orange wheel ─────────────
