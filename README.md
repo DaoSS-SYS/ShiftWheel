@@ -8,10 +8,12 @@
 
 Требуется Windows 10/11 и [.NET 10 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/10.0).
 
-1. Соберите приложение (команда в разделе «Сборка»). Готовый файл появится в `ShiftWheel\bin\Release\net10.0-windows10.0.19041.0\win-x64\publish\ShiftWheel.exe`.
+1. Скачайте архив последней версии на странице [Releases](https://github.com/DaoSS-SYS/ShiftWheel/releases/latest) и распакуйте его.
 2. Запустите `ShiftWheel.exe`. В трее появится оранжевая иконка.
 3. Для картинок, видео и аудио нужен **ffmpeg**: `winget install Gyan.FFmpeg`.
 4. Правый клик по иконке в трее → **«Запускать вместе с Windows»**, чтобы приложение стартовало само.
+
+Файл не подписан цифровой подписью, а приложение перехватывает нажатия мыши и клавиатуры (так оно ловит Shift во время перетаскивания), поэтому SmartScreen или антивирус могут показать предупреждение. Исходный код открыт: собрать приложение можно самостоятельно (см. «Сборка»).
 
 ## Что умеет
 
@@ -58,12 +60,14 @@ ShiftWheel.exe --convert <файл> tool:compress     (strip | resize | rotate)
 
 Лог работы колеса: задайте переменную `SHIFTWHEEL_DEBUG=1` перед запуском, лог будет в `%TEMP%\shiftwheel.log`.
 
-## Сборка
+## Сборка из исходников
 
 ```
 cd ShiftWheel
 dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true
 ```
+
+Готовый файл появится в `bin\Release\net10.0-windows10.0.19041.0\win-x64\publish\`.
 
 ## Как сделан
 
