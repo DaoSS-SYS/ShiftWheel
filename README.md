@@ -1,5 +1,7 @@
 # ShiftWheel
 
+[![CI](https://github.com/DaoSS-SYS/ShiftWheel/actions/workflows/ci.yml/badge.svg)](https://github.com/DaoSS-SYS/ShiftWheel/actions/workflows/ci.yml) [![Release](https://img.shields.io/github/v/release/DaoSS-SYS/ShiftWheel)](https://github.com/DaoSS-SYS/ShiftWheel/releases/latest) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Конвертер файлов для Windows в духе Tangerine для Mac. Берёте файл в Проводнике или на рабочем столе, начинаете его перетаскивать и нажимаете **Shift**: вокруг курсора появляется колесо. Бросаете файл на сектор, и рядом с оригиналом появляется результат.
 
 **Стек:** C#, .NET 10, WPF и Windows Forms, ffmpeg, Microsoft Office (COM).
@@ -72,3 +74,7 @@ dotnet publish -c Release -r win-x64 --self-contained false -p:PublishSingleFile
 ## Как сделан
 
 Проект сделан вместе с Claude (Claude Code): идея и постановка задач мои, код написан с помощью ИИ, результат я проверял запуском. Здесь это отдельный личный инструмент, а не пример моего собственного кода: самостоятельно написанный backend-проект — [LearningTracker](https://github.com/DaoSS-SYS/LearningTracker).
+
+## Лицензия
+
+MIT, см. [LICENSE](LICENSE).
